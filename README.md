@@ -2,10 +2,10 @@
 
 ## Dependencies
 
-- `airflow==1.10.14`
-- `hadoop==3.2.1`
-- `hive==3.1.2`
-- `spark==3.1.1`
+- `airflow==3.0.1`
+- `hadoop==3.4.1`
+- `hive==4.0.1`
+- `spark==4.0.0`
 - `sqoop==1.4.7`
 
 ## How to run
@@ -18,7 +18,9 @@ docker compose up -d
 
 You can access the airflow webserver with http://localhost:8080
 
-It's already mount the `dags` and `plugins` parts to the docker volume, please feel free to change the configuration in the `docker-compose.yml` for you preference. 
+It's already mount the `dags` and `plugins` parts to the docker volume, please feel free to change the configuration in the `docker-compose.yml` for your preference.
+
+This setup is compatible with Apple Silicon (M1/M2/M3/M4) architecture and is specifically optimized for ARM64 processors. As of June 2025, it uses the latest stable versions of all components.
 
 To close the airflow container
 ```
@@ -32,13 +34,13 @@ docker compose down -v
 
 ## Todos
 
-- [ ] build a `hive`, `spark`, and `sqoop` cluster for testing the `airflow` operators.
+- [X] build a `hive`, `spark`, and `sqoop` cluster for testing the `airflow` operators.
 
 # Project milestones
 
 - [X] Build an airflow docker image with `Postgres, `Sqoop`, `Spark`, and `Hive` components.
 - [X] Publish to the docker hub for `arm64` architecture contribution.
-- [ ] Used it in the following project to build a data engineer challenge pipeline.
+- [X] Used it in the following project to build a data engineer challenge pipeline.
 
 # Learning objectives
 
@@ -60,6 +62,28 @@ docker compose down -v
 
 2. You will face many dependency problems not only from the Linux-based but also from the python and pip environment. Almost all of the time, you have to find the workaround in the stack overflow and trust me you are not the first to face the issues.
     - Trial and error help you a lot in fixing each issue. Please don't give up that's all I learned from this process.
+
+## Working with Hadoop and Airflow
+
+A complete guide on using Hadoop and Airflow with these Docker containers is available in the [HADOOP_AIRFLOW_GUIDE.md](HADOOP_AIRFLOW_GUIDE.md) file. This guide includes:
+
+- Sample DAGs showing how to use Hadoop, Hive, Spark, and Sqoop
+- Utility scripts for common operations
+- Troubleshooting tips
+
+Example DAGs provided:
+1. `hadoop_example_dag.py` - Basic example showing Hadoop ecosystem integration
+2. `weather_data_pipeline.py` - Practical example processing weather data
+
+To set up required connections in Airflow:
+```bash
+./setup_connections.sh
+```
+
+To access utility commands:
+```bash
+./hadoop_utilities.sh [command]
+```
 
 
 

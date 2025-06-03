@@ -1,16 +1,16 @@
-FROM python:3.6-stretch
+FROM python:3.12-slim-bookworm
 
 # --------------------------------------------------------
 # JAVA
 # --------------------------------------------------------
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    openjdk-8-jdk
-ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-arm64/
+    openjdk-17-jdk
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-arm64/
 
 # --------------------------------------------------------
 # HADOOP
 # --------------------------------------------------------
-ENV HADOOP_VERSION=3.2.1
+ENV HADOOP_VERSION=3.4.1
 ENV HADOOP_URL=https://downloads.apache.org/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz
 ENV HADOOP_PREFIX=/opt/hadoop-$HADOOP_VERSION
 ENV HADOOP_CONF_DIR=/etc/hadoop
@@ -31,8 +31,8 @@ RUN mkdir /hadoop-data
 # HIVE
 # --------------------------------------------------------
 
-ENV HIVE_VERSION=3.1.2
-ENV POSTGRES_JAR_VERSION=42.2.20
+ENV HIVE_VERSION=4.0.1
+ENV POSTGRES_JAR_VERSION=42.7.6
 ENV HIVE_HOME=/opt/hive
 ENV PATH=$HIVE_HOME/bin:$PATH
 ENV HADOOP_HOME=/opt/hadoop-$HADOOP_VERSION
@@ -58,8 +58,9 @@ ADD conf/ivysettings.xml $HIVE_HOME/conf
 ADD conf/hive-env.sh $HIVE_HOME/conf
 
 # Work around for guava dependency [HIVE-22915 issues]
-RUN rm /opt/hive/lib/guava-19.0.jar
-RUN cp /opt/hadoop-$HADOOP_VERSION/share/hadoop/hdfs/lib/guava-27.0-jre.jar /opt/hive/lib/
+# Updated for Hadoop 3.4.1 and Hive 4.0.1
+RUN rm /opt/hive/lib/guava-*.jar || true
+RUN cp /opt/hadoop-$HADOOP_VERSION/share/hadoop/hdfs/lib/guava-*.jar /opt/hive/lib/
 
 # --------------------------------------------------------
 # SQOOP
@@ -80,8 +81,8 @@ RUN cp $HIVE_HOME/lib/postgresql-jdbc.jar ${SQOOP_HOME}/lib/postgresql-jdbc.jar
 # SPARK
 # --------------------------------------------------------
 
-ENV SPARK_VERSION=spark-3.1.1-bin-hadoop3.2
-ENV SPARK_URL https://www.apache.org/dist/spark/spark-3.1.1/${SPARK_VERSION}.tgz
+ENV SPARK_VERSION=spark-4.0.0-bin-hadoop3
+ENV SPARK_URL https://www.apache.org/dist/spark/spark-4.0.0/${SPARK_VERSION}.tgz
 ENV SPARK_HOME=/opt/$SPARK_VERSION
 ENV PATH $SPARK_HOME/bin:$PATH
 ENV HADOOP_CONF_DIR=$SPARK_HOME/conf

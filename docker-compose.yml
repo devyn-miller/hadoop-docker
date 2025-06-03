@@ -1,12 +1,14 @@
-version: '3.7'
+version: '3.9'
 services:
     postgres:
         container_name: airflow-database
-        image: postgres:9.6
+        image: postgres:16.3
+        platform: linux/arm64
         environment:
             - POSTGRES_USER=airflow
             - POSTGRES_PASSWORD=airflow
             - POSTGRES_DB=airflow
+            - POSTGRES_HOST_AUTH_METHOD=md5
         logging:
             options:
                 max-size: 10m
@@ -15,6 +17,7 @@ services:
     webserver:
         container_name: airflow-webserver
         image: ppatcoding/airflow:latest
+        platform: linux/arm64
         restart: always
         depends_on:
             - postgres
@@ -26,7 +29,7 @@ services:
                 max-size: 10m
                 max-file: "3"
         volumes:
-            - ./ariflow/dags:/usr/local/airflow/dags
+            - ./airflow/dags:/usr/local/airflow/dags
             - ./airflow/plugins:/usr/local/airflow/plugins
         ports:
             - "8080:8080"
